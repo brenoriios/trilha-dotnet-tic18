@@ -18,31 +18,31 @@ USE `clinica_medica`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `paciente`
+-- Table structure for table `medico`
 --
 
-DROP TABLE IF EXISTS `paciente`;
+DROP TABLE IF EXISTS `medico`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `paciente` (
+CREATE TABLE `medico` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `cpf` varchar(14) NOT NULL,
+  `codigo` varchar(10) NOT NULL,
   `nome` varchar(100) NOT NULL,
-  `endereco` varchar(200) NOT NULL,
-  `telefone` varchar(14) NOT NULL,
+  `especialidade` varchar(100) NOT NULL,
+  `salario` float NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `cpf_UNIQUE` (`cpf`)
+  UNIQUE KEY `codigo_UNIQUE` (`codigo`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `paciente`
+-- Dumping data for table `medico`
 --
 
-LOCK TABLES `paciente` WRITE;
-/*!40000 ALTER TABLE `paciente` DISABLE KEYS */;
-INSERT INTO `paciente` VALUES (1,'123.456.789-01','Paciente 1','Rua Qualquer, Bairro Algum - N° Tal','+5573912345678'),(2,'123.456.789-02','Paciente 2','Rua Qualquer, Bairro Algum - N° Outro','+5573912345876');
-/*!40000 ALTER TABLE `paciente` ENABLE KEYS */;
+LOCK TABLES `medico` WRITE;
+/*!40000 ALTER TABLE `medico` DISABLE KEYS */;
+INSERT INTO `medico` VALUES (1,'123654','Medico 1','Esp 1',5000),(2,'321456','Medico 2','Esp 2',7599.15);
+/*!40000 ALTER TABLE `medico` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -54,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-12-19 17:02:22
+-- Dump completed on 2023-12-19 17:19:42

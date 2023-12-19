@@ -18,31 +18,33 @@ USE `clinica_medica`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `medico`
+-- Table structure for table `consulta`
 --
 
-DROP TABLE IF EXISTS `medico`;
+DROP TABLE IF EXISTS `consulta`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `medico` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `codigo` varchar(10) NOT NULL,
-  `nome` varchar(100) NOT NULL,
-  `especialidade` varchar(100) NOT NULL,
-  `salario` float NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `codigo_UNIQUE` (`codigo`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `consulta` (
+  `numero` int NOT NULL AUTO_INCREMENT,
+  `data_hora_consulta` datetime NOT NULL,
+  `id_medico` int NOT NULL,
+  `id_paciente` int NOT NULL,
+  PRIMARY KEY (`numero`),
+  KEY `fk_consulta_medico_idx` (`id_medico`),
+  KEY `fk_consulta_paciente_idx` (`id_paciente`),
+  CONSTRAINT `fk_consulta_medico` FOREIGN KEY (`id_medico`) REFERENCES `medico` (`id`),
+  CONSTRAINT `fk_consulta_paciente` FOREIGN KEY (`id_paciente`) REFERENCES `paciente` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `medico`
+-- Dumping data for table `consulta`
 --
 
-LOCK TABLES `medico` WRITE;
-/*!40000 ALTER TABLE `medico` DISABLE KEYS */;
-INSERT INTO `medico` VALUES (1,'123654','Medico 1','Esp 1',5000),(2,'321456','Medico 2','Esp 2',7599.15);
-/*!40000 ALTER TABLE `medico` ENABLE KEYS */;
+LOCK TABLES `consulta` WRITE;
+/*!40000 ALTER TABLE `consulta` DISABLE KEYS */;
+INSERT INTO `consulta` VALUES (1,'2023-12-19 16:26:10',1,2),(2,'2023-12-19 16:26:36',2,2),(3,'2023-12-19 17:09:00',2,2);
+/*!40000 ALTER TABLE `consulta` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -54,4 +56,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-12-19 17:02:22
+-- Dump completed on 2023-12-19 17:19:42
