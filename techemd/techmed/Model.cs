@@ -6,6 +6,8 @@ public class TechmedContext : DbContext {
     public DbSet<Patient> Patients { get; set; }
     // public DbSet<Appointment> Appointments { get; set; }
     // public DbSet<Exam> Exams { get; set; }
+
+    public TechmedContext(){}
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
         base.OnConfiguring(optionsBuilder);
         var connectionString = "server=localhost;user=dotnet;password=tic2023;database=techmed";
