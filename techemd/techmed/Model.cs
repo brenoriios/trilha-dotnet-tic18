@@ -4,8 +4,8 @@ namespace Techmed.Model;
 public class TechmedContext : DbContext {
     public DbSet<Doctor> Doctors { get; set; }
     public DbSet<Patient> Patients { get; set; }
-    // public DbSet<Appointment> Appointments { get; set; }
-    // public DbSet<Exam> Exams { get; set; }
+    public DbSet<Appointment> Appointments { get; set; }
+    public DbSet<Exam> Exams { get; set; }
 
     public TechmedContext(){}
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
@@ -17,9 +17,11 @@ public class TechmedContext : DbContext {
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
         base.OnModelCreating(modelBuilder);
+
         modelBuilder.Entity<Doctor>().ToTable("doctors").HasKey(d => d.Id);
-        modelBuilder.Entity<Doctor>().Property(d => d.Code).IsRequired();
         modelBuilder.Entity<Patient>().ToTable("patients").HasKey(p => p.Id);
+        modelBuilder.Entity<Appointment>().ToTable("appointments").HasKey(a => a.Number);
+        modelBuilder.Entity<Exam>().ToTable("exams").HasKey(e => e.Code);
     }
 }
 
@@ -40,15 +42,17 @@ public class Patient : Person {
     public string Phone { get; set; }
 }
 
-// public class Appointment {
-//     public int number { get; set; }
-//     public DateTime CreatedAt { get; set; }
-//     public Patient patient{ get; set; }
-//     public Doctor doctor{ get; set; }
-// }
+public class Appointment {
+    public int Number { get; set; }
+    public Patient Patient{ get; set; }
+    public Doctor Doctor{ get; set; }
+    public List<Exam> Exams { get; set; }
+    public DateTime Date { get; set; }
+}
 
-// public class Exam {
-//     public string Code { get; set; }
-//     public string Name { get; set; }
-//     public float Price { get; set; }
-// }
+public class Exam {
+    public string Code { get; set; }
+    public string Name { get; set; }
+    public float Price { get; set; }
+    public List<Appointment> Appointments { get; set; }
+}

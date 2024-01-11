@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Techmed.Model;
 
@@ -10,29 +11,16 @@ using Techmed.Model;
 namespace techmed.Migrations
 {
     [DbContext(typeof(TechmedContext))]
-    partial class TechmedContextModelSnapshot : ModelSnapshot
+    [Migration("20240111112632_NewEntities")]
+    partial class NewEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.14")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
-
-            modelBuilder.Entity("AppointmentExam", b =>
-                {
-                    b.Property<int>("AppointmentsNumber")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ExamsCode")
-                        .HasColumnType("varchar(255)");
-
-                    b.HasKey("AppointmentsNumber", "ExamsCode");
-
-                    b.HasIndex("ExamsCode");
-
-                    b.ToTable("AppointmentExam");
-                });
 
             modelBuilder.Entity("Techmed.Model.Appointment", b =>
                 {
@@ -40,20 +28,20 @@ namespace techmed.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Date")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("DoctorId")
+                    b.Property<int>("doctorId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PatientId")
+                    b.Property<int>("patientId")
                         .HasColumnType("int");
 
                     b.HasKey("Number");
 
-                    b.HasIndex("DoctorId");
+                    b.HasIndex("doctorId");
 
-                    b.HasIndex("PatientId");
+                    b.HasIndex("patientId");
 
                     b.ToTable("appointments", (string)null);
                 });
@@ -128,38 +116,23 @@ namespace techmed.Migrations
                     b.ToTable("patients", (string)null);
                 });
 
-            modelBuilder.Entity("AppointmentExam", b =>
-                {
-                    b.HasOne("Techmed.Model.Appointment", null)
-                        .WithMany()
-                        .HasForeignKey("AppointmentsNumber")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Techmed.Model.Exam", null)
-                        .WithMany()
-                        .HasForeignKey("ExamsCode")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Techmed.Model.Appointment", b =>
                 {
-                    b.HasOne("Techmed.Model.Doctor", "Doctor")
+                    b.HasOne("Techmed.Model.Doctor", "doctor")
                         .WithMany()
-                        .HasForeignKey("DoctorId")
+                        .HasForeignKey("doctorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Techmed.Model.Patient", "Patient")
+                    b.HasOne("Techmed.Model.Patient", "patient")
                         .WithMany()
-                        .HasForeignKey("PatientId")
+                        .HasForeignKey("patientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Doctor");
+                    b.Navigation("doctor");
 
-                    b.Navigation("Patient");
+                    b.Navigation("patient");
                 });
 #pragma warning restore 612, 618
         }
