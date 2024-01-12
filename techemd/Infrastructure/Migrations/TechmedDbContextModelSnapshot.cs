@@ -46,17 +46,11 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<DateTime>("DeletedAt")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<int>("DoctorId")
                         .HasColumnType("int");
 
                     b.Property<int>("PatientId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
 
@@ -78,14 +72,13 @@ namespace Infrastructure.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)")
+                        .HasDefaultValue(new DateTime(2024, 1, 12, 18, 42, 57, 125, DateTimeKind.Utc).AddTicks(7740));
 
                     b.Property<string>("Crm")
                         .IsRequired()
                         .HasColumnType("longtext");
-
-                    b.Property<DateTime>("DeletedAt")
-                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -96,9 +89,6 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("Specialization")
                         .HasColumnType("longtext");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
 
@@ -117,9 +107,6 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<DateTime>("DeletedAt")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -130,9 +117,6 @@ namespace Infrastructure.Migrations
 
                     b.Property<float>("Price")
                         .HasColumnType("float");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
 
@@ -156,18 +140,12 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<DateTime>("DeletedAt")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Phone")
                         .HasColumnType("longtext");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
 
