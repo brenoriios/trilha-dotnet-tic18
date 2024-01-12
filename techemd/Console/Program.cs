@@ -1,7 +1,15 @@
-﻿using Techmed.Domain.Entities;
+﻿using System.Globalization;
+using Techmed.Domain.Entities;
 using Techmed.Infrastructure.TechmedDbContext;
 
+CultureInfo.CurrentCulture = CultureInfo.CreateSpecificCulture("pt-br");
+
 var db = new TechmedDbContext();
+
+db.Exams.RemoveRange(db.Exams);
+db.Appointments.RemoveRange(db.Appointments);
+db.Doctors.RemoveRange(db.Doctors);
+db.Patients.RemoveRange(db.Patients);
 
 // Medico 1
 var doctor = new Doctor(){
