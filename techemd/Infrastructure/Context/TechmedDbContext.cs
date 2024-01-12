@@ -3,6 +3,10 @@ using Techmed.Domain.Entities;
 namespace Techmed.Infrastructure.TechmedDbContext;
 public class TechmedDbContext : DbContext
 {
+    public DbSet<Doctor> Doctors { get; set; }
+    public DbSet<Patient> Patients { get; set; }
+    public DbSet<Appointment> Appointments { get; set; }
+    public DbSet<Exam> Exams { get; set; }
     public TechmedDbContext() { }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
