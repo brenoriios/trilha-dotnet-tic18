@@ -5,7 +5,7 @@ using Techmed.Domain.Entities;
 namespace TechMed.WebAPI.Controllers;
 
 [ApiController]
-[Route("api/v0.1/[controller]s")]
+[Route("api/v0.1/")]
 public class DoctorController : ControllerBase
 {
     private static readonly TechmedDbContext db = new TechmedDbContext();
@@ -17,12 +17,12 @@ public class DoctorController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet(Name = "GetDoctors")]
+    [HttpGet("doctors", Name = "GetDoctors")]
     public IActionResult GetAll() {
         return Ok(db.Doctors.ToArray());
     }
 
-    [HttpGet("{id}", Name = "GetDoctorById")]
+    [HttpGet("doctor/{id}", Name = "GetDoctorById")]
     public IActionResult Get(int id) {
         var doctor = db.Doctors.FirstOrDefault(d => d.Id == id);
         if(doctor == null) {
@@ -31,7 +31,7 @@ public class DoctorController : ControllerBase
         return Ok(doctor);
     }
 
-    [HttpPost(Name = "CreateDoctor")]
+    [HttpPost("doctor", Name = "CreateDoctor")]
     public IActionResult Create(string _name, string _cpf, string _crm, string _specialization, float _salary){
         db.Doctors.Add(new Doctor() {
             Name = _name,
@@ -45,7 +45,7 @@ public class DoctorController : ControllerBase
         return Ok();
     }
 
-    [HttpPut("{id}", Name = "UpdateDoctor")]
+    [HttpPut("doctor/{id}", Name = "UpdateDoctor")]
     public IActionResult Update(int id, string _name, string _cpf, string _crm, string _specialization, float _salary){
         var Doctor = db.Doctors.FirstOrDefault(d => d.Id == id);
         if(Doctor == null) {
@@ -64,7 +64,7 @@ public class DoctorController : ControllerBase
         return Accepted();
     }
 
-    [HttpDelete("{id}", Name = "DeleteDoctor")]
+    [HttpDelete("doctor/{id}", Name = "DeleteDoctor")]
     public IActionResult Delete(int id) {
         var Doctor = db.Doctors.FirstOrDefault(d => d.Id == id);
         if(Doctor == null) {

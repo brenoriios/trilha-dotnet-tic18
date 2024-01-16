@@ -7,7 +7,7 @@ using Techmed.Infrastructure.TechmedDbContext;
 namespace TechMed.WebAPI.Controllers;
 
 [ApiController]
-[Route("api/v0.1/[controller]s")]
+[Route("api/v0.1/")]
 public class PatientController : ControllerBase
 {
     private static readonly TechmedDbContext db = new TechmedDbContext();
@@ -18,12 +18,12 @@ public class PatientController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet(Name = "GetPatients")]
+    [HttpGet("patients", Name = "GetPatients")]
     public IActionResult GetAll(){
         return Ok(db.Patients.ToArray());
     }
 
-    [HttpGet("{id}", Name = "GetPatientById")]
+    [HttpGet("patient/{id}", Name = "GetPatientById")]
     public IActionResult Get(int id) {
         var patient = db.Patients.FirstOrDefault(d => d.Id == id);
         if(patient == null) {
@@ -32,7 +32,7 @@ public class PatientController : ControllerBase
         return Ok(patient);
     }
 
-    [HttpPost(Name = "CreatePatient")]
+    [HttpPost("patient", Name = "CreatePatient")]
     public IActionResult Create(string _name, string _cpf, string _address, string _phone){
         db.Patients.Add(new Patient() {
             Name = _name,
@@ -45,7 +45,7 @@ public class PatientController : ControllerBase
         return Ok();
     }
 
-    [HttpPut("{id}", Name = "UpdatePatient")]
+    [HttpPut("patient/{id}", Name = "UpdatePatient")]
     public IActionResult Update(int id, string _name, string _cpf, string _address, string _phone){
         var patient = db.Patients.FirstOrDefault(p => p.Id == id);
         if(patient == null) {
@@ -63,7 +63,7 @@ public class PatientController : ControllerBase
         return Accepted();
     }
 
-    [HttpDelete("{id}", Name = "DeletePatient")]
+    [HttpDelete("patient/{id}", Name = "DeletePatient")]
     public IActionResult Delete(int id) {
         var patient = db.Patients.FirstOrDefault(p => p.Id == id);
         if(patient == null) {
