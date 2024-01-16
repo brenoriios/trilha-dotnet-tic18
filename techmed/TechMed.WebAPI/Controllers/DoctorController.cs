@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 namespace TechMed.WebAPI.Controllers;
 
-[Route("[controller]s")]
+[ApiController]
+[Route("api/[controller]s")]
 public class DoctorController : ControllerBase
 {
     public static readonly Doctor[] doctors = new Doctor[] {
@@ -20,7 +21,7 @@ public class DoctorController : ControllerBase
     }
 
     [HttpGet(Name = "GetDoctors")]
-    public Doctor[] Get() {
+    public IEnumerable<Doctor> Get() {
         return doctors;
     }
 }

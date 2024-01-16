@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace TechMed.WebAPI.Controllers;
 
 [ApiController]
-[Route("[controller]s")]
+[Route("api/[controller]s")]
 public class PatientController : ControllerBase
 {
     private static readonly Patient[] patients = new[]
