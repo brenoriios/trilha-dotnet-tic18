@@ -1,4 +1,4 @@
-namespace TechMed.WebAPI;
+namespace TechMed.WebAPI.Model;
 public class Doctor : Person
 {
     public required string Crm { get; set; }

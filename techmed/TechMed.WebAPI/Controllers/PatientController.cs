@@ -1,19 +1,16 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Techmed.Domain.Entities;
+using Techmed.Infrastructure.TechmedDbContext;
 
 namespace TechMed.WebAPI.Controllers;
 
 [ApiController]
-[Route("api/[controller]s")]
+[Route("api/v0.1/[controller]s")]
 public class PatientController : ControllerBase
 {
-    private static readonly Patient[] patients = new[]
-    {
-        new Patient(){Id = 1, Name = "Paciente 1", Phone = "Telefone 1", Address = "Endereço 1"},
-        new Patient(){Id = 2, Name = "Paciente 2", Phone = "Telefone 2", Address = "Endereço 2"},
-        new Patient(){Id = 3, Name = "Paciente 3", Phone = "Telefone 3", Address = "Endereço 3"},
-        new Patient(){Id = 4, Name = "Paciente 4", Phone = "Telefone 4", Address = "Endereço 4"},
-        new Patient(){Id = 5, Name = "Paciente 5", Phone = "Telefone 5", Address = "Endereço 5"},
-    };
+    private static readonly TechmedDbContext db = new TechmedDbContext();
     private readonly ILogger<PatientController> _logger;
 
     public PatientController(ILogger<PatientController> logger)
@@ -22,7 +19,50 @@ public class PatientController : ControllerBase
     }
 
     [HttpGet(Name = "GetPatient")]
-    public IEnumerable<Patient> Get(){
-        return patients;
+    public IActionResult Get(){
+        return Ok(db.Patients.ToArray());
+    }
+
+    [HttpPost(Name = "CreatePatient")]
+    public IActionResult Create(string _name, string _cpf, string _address, string _phone){
+        db.Patients.Add(new Patient() {
+            Name = _name,
+            Cpf = _cpf,
+            Address = _address,
+            Phone = _phone
+        });
+        db.SaveChanges();
+
+        return Ok();
+    }
+
+    [HttpPut(Name = "UpdatePatient")]
+    public IActionResult Update(int id, string _name, string _cpf, string _address, string _phone){
+        var patient = db.Patients.FirstOrDefault(p => p.Id == id);
+        if(patient == null) {
+            return NoContent();
+        }
+
+        patient.Name = _name;
+        patient.Cpf = _cpf;
+        patient.Address = _address;
+        patient.Phone = _phone;
+
+        db.Patients.Update(patient);
+        db.SaveChanges();
+
+        return Accepted();
+    }
+
+    [HttpDelete(Name = "DeletePatient")]
+    public IActionResult Delete(int id) {
+        var patient = db.Patients.FirstOrDefault(p => p.Id == id);
+        if(patient == null) {
+            return NoContent();
+        }
+        db.Patients.Remove(patient);
+        db.SaveChanges();
+
+        return Ok();
     }
 }

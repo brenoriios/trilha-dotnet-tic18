@@ -1,17 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
+using Techmed.Infrastructure.TechmedDbContext;
+using Techmed.Domain.Entities;
+
 namespace TechMed.WebAPI.Controllers;
 
 [ApiController]
-[Route("api/[controller]s")]
+[Route("api/v0.1/[controller]s")]
 public class DoctorController : ControllerBase
 {
-    public static readonly Doctor[] doctors = new Doctor[] {
-        new Doctor(){Id = 1, Name = "Médico 1", Crm = "12345", Speciality = "Especialidade 1"},
-        new Doctor(){Id = 2, Name = "Médico 2", Crm = "22345", Speciality = "Especialidade 2"},
-        new Doctor(){Id = 3, Name = "Médico 3", Crm = "32345", Speciality = "Especialidade 3"},
-        new Doctor(){Id = 4, Name = "Médico 4", Crm = "42345", Speciality = "Especialidade 4"},
-        new Doctor(){Id = 5, Name = "Médico 5", Crm = "52345", Speciality = "Especialidade 5"}
-    };
+    private static readonly TechmedDbContext db = new TechmedDbContext();
 
     private readonly ILogger<DoctorController> _logger;
 
@@ -21,7 +18,52 @@ public class DoctorController : ControllerBase
     }
 
     [HttpGet(Name = "GetDoctors")]
-    public IEnumerable<Doctor> Get() {
-        return doctors;
+    public IActionResult Get() {
+        return Ok(db.Doctors.ToArray());
+    }
+
+    [HttpPost(Name = "CreateDoctor")]
+    public IActionResult Create(string _name, string _cpf, string _crm, string _specialization, float _salary){
+        db.Doctors.Add(new Doctor() {
+            Name = _name,
+            Cpf = _cpf,
+            Crm = _crm,
+            Specialization = _specialization,
+            Salary = _salary
+        });
+        db.SaveChanges();
+
+        return Ok();
+    }
+
+    [HttpPut(Name = "UpdateDoctor")]
+    public IActionResult Update(int id, string _name, string _cpf, string _crm, string _specialization, float _salary){
+        var Doctor = db.Doctors.FirstOrDefault(d => d.Id == id);
+        if(Doctor == null) {
+            return NoContent();
+        }
+
+        Doctor.Name = _name;
+        Doctor.Cpf = _cpf;
+        Doctor.Crm = _crm;
+        Doctor.Specialization = _specialization;
+        Doctor.Salary = _salary;
+
+        db.Doctors.Update(Doctor);
+        db.SaveChanges();
+
+        return Accepted();
+    }
+
+    [HttpDelete(Name = "DeleteDoctor")]
+    public IActionResult Delete(int id) {
+        var Doctor = db.Doctors.FirstOrDefault(d => d.Id == id);
+        if(Doctor == null) {
+            return NoContent();
+        }
+        db.Doctors.Remove(Doctor);
+        db.SaveChanges();
+
+        return Ok();
     }
 }
