@@ -18,8 +18,17 @@ public class DoctorController : ControllerBase
     }
 
     [HttpGet(Name = "GetDoctors")]
-    public IActionResult Get() {
+    public IActionResult GetAll() {
         return Ok(db.Doctors.ToArray());
+    }
+
+    [HttpGet("{id}", Name = "GetDoctorById")]
+    public IActionResult Get(int id) {
+        var doctor = db.Doctors.FirstOrDefault(d => d.Id == id);
+        if(doctor == null) {
+            return NoContent();
+        }
+        return Ok(doctor);
     }
 
     [HttpPost(Name = "CreateDoctor")]
@@ -36,7 +45,7 @@ public class DoctorController : ControllerBase
         return Ok();
     }
 
-    [HttpPut(Name = "UpdateDoctor")]
+    [HttpPut("{id}", Name = "UpdateDoctor")]
     public IActionResult Update(int id, string _name, string _cpf, string _crm, string _specialization, float _salary){
         var Doctor = db.Doctors.FirstOrDefault(d => d.Id == id);
         if(Doctor == null) {
@@ -55,7 +64,7 @@ public class DoctorController : ControllerBase
         return Accepted();
     }
 
-    [HttpDelete(Name = "DeleteDoctor")]
+    [HttpDelete("{id}", Name = "DeleteDoctor")]
     public IActionResult Delete(int id) {
         var Doctor = db.Doctors.FirstOrDefault(d => d.Id == id);
         if(Doctor == null) {

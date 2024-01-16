@@ -18,9 +18,18 @@ public class PatientController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet(Name = "GetPatient")]
-    public IActionResult Get(){
+    [HttpGet(Name = "GetPatients")]
+    public IActionResult GetAll(){
         return Ok(db.Patients.ToArray());
+    }
+
+    [HttpGet("{id}", Name = "GetPatientById")]
+    public IActionResult Get(int id) {
+        var patient = db.Patients.FirstOrDefault(d => d.Id == id);
+        if(patient == null) {
+            return NoContent();
+        }
+        return Ok(patient);
     }
 
     [HttpPost(Name = "CreatePatient")]
@@ -36,7 +45,7 @@ public class PatientController : ControllerBase
         return Ok();
     }
 
-    [HttpPut(Name = "UpdatePatient")]
+    [HttpPut("{id}", Name = "UpdatePatient")]
     public IActionResult Update(int id, string _name, string _cpf, string _address, string _phone){
         var patient = db.Patients.FirstOrDefault(p => p.Id == id);
         if(patient == null) {
@@ -54,7 +63,7 @@ public class PatientController : ControllerBase
         return Accepted();
     }
 
-    [HttpDelete(Name = "DeletePatient")]
+    [HttpDelete("{id}", Name = "DeletePatient")]
     public IActionResult Delete(int id) {
         var patient = db.Patients.FirstOrDefault(p => p.Id == id);
         if(patient == null) {
