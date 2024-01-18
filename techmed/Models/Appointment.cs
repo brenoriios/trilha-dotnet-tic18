@@ -1,5 +1,3 @@
-using TechMed.Model;
-
 namespace TechMed.WebAPI.Model;
 public class Appointment{
     public int AppointmentId {get; set;}

@@ -1,4 +1,4 @@
-namespace TechMed.Model;
+namespace TechMed.WebAPI.Model;
 public class Doctor : Person
 {
     public int DoctorId { get; set; }

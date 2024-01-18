@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using TechMed.Model;
+using TechMed.WebAPI.Model;
 using TechMed.WebAPI.Model;
 
 namespace TechMed.WebAPI.Controllers;
