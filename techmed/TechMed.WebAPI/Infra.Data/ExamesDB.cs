@@ -37,6 +37,7 @@ public class ExamesDB : IExameCollection
         if (exameDB is not null)
         {
             exameDB.DataHora = exame.DataHora;
+            exameDB.Local = exame.Local;
         }
     }
 }
