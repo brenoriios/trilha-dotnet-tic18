@@ -1,6 +1,4 @@
-using System.Reflection.Metadata;
 using Microsoft.AspNetCore.Mvc;
-using TechMed.WebAPI.Infra;
 using TechMed.WebAPI.Infra.Data.Interfaces;
 using TechMed.WebAPI.Model;
 

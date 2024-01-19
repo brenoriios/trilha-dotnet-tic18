@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<IMedicoCollection, MedicosDB>();
 builder.Services.AddSingleton<IPacienteCollection, PacientesDB>();
 builder.Services.AddSingleton<IAtendimentoCollection, AtendimentosDB>();
+builder.Services.AddSingleton<IExameCollection, ExamesDB>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
