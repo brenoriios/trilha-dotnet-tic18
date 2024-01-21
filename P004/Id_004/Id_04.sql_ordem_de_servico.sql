@@ -3,7 +3,7 @@ CREATE TABLE `osmanagerdb`.`ordem_de_servico` (
   `numero` INT NOT NULL,
   `descricao` VARCHAR(100) NULL,
   `data_emissao` DATETIME NOT NULL,
-  `status_id` INT NOT NULL,
+  `status` VARCHAR(50) NOT NULL,
   `cliente_id` INT NOT NULL,
   `prestador_de_servico_id` INT NOT NULL,
   PRIMARY KEY (`ordem_de_servico_id`)
