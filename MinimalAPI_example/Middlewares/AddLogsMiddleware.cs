@@ -1,4 +1,5 @@
 using System.Net.Mime;
+using System.Text.Json;
 
 namespace MinimalAPI_example.Middlewares;
 public class AddRequestData
@@ -50,12 +51,22 @@ public class AddRequestJsonException
     {
         try
         {
-            // throw new DivideByZeroException();
+            throw new DivideByZeroException();
             await _next(context);
         }
         catch (Exception ex)
         {
-            await context.Response.WriteAsJsonAsync(ex.Message);
+            JsonMessage jsonMessage = new JsonMessage(){
+                ExceptionType = ex.GetType().ToString(),
+                Message = ex.Message
+            };
+            await context.Response.WriteAsJsonAsync(JsonSerializer.Serialize(jsonMessage));
         }
     }
+}
+
+public class JsonMessage
+{
+    public string? ExceptionType { get; set; }
+    public string? Message { get; set; }
 }
