@@ -14,7 +14,6 @@ public class AddRequestData
 
         await _next(context);
 
-        // context.Response.Headers.Add("request-start", $"DataHora: {DateTimeOffset.UtcNow.ToLocalTime()} - IP: {clientIpAddress}");
         await context.Response.WriteAsync($"DataHora: {DateTimeOffset.UtcNow.ToLocalTime()} - IP: {clientIpAddress}\n");
     }
 }
@@ -36,7 +35,6 @@ public class AddRequestDurationMiddleware
         var fim = DateTimeOffset.UtcNow.Ticks;
         double duracao = (fim - inicio) / (TimeSpan.TicksPerMillisecond / 1000);
         await context.Response.WriteAsync($"{duracao} microsegundos\n");
-        // context.Response.Headers.Add("request-duration", $"{duracao} microsegundos");
     }
 }
 
