@@ -1,12 +1,13 @@
-using MinimalAPI_example;
+using MinimalAPI_example.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
-app.UseChassiMiddleware();
-app.UseMotorMiddleware();
-app.UsePortasMiddleware();
-app.UsePinturaMiddleware();
-app.UseInternoMiddleware();
+app.UseMiddleware<AddRequestJsonException>();
+app.UseMiddleware<AddRequestDurationMiddleware>();
+app.UseMiddleware<AddRequestData>();
+app.Run(
+    async (context) => {}
+);
 
 app.Run();
