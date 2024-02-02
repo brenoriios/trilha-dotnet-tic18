@@ -58,7 +58,9 @@ public class AddRequestJsonException
         }
         catch (Exception ex)
         {
+            context.Response.StatusCode = 200;
             JsonMessage jsonMessage = new JsonMessage(){
+                StatusCode = context.Response.StatusCode,
                 ExceptionType = ex.GetType().ToString(),
                 Message = ex.Message
             };
@@ -69,6 +71,7 @@ public class AddRequestJsonException
 
 public class JsonMessage
 {
+    public int StatusCode { get; set;}
     public string? ExceptionType { get; set; }
     public string? Message { get; set; }
 }
