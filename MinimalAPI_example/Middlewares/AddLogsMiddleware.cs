@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Net.Mime;
 using System.Text.Json;
 
@@ -12,10 +13,9 @@ public class AddRequestData
     public async Task Invoke(HttpContext context)
     {
         var clientIpAddress = context.Connection.RemoteIpAddress;
-
+        context.Response.Headers.Add("data-hora", DateTimeOffset.UtcNow.ToLocalTime().ToString());
+        context.Response.Headers.Add("ip-origem", context.Connection.RemoteIpAddress.ToString());
         await _next(context);
-
-        await context.Response.WriteAsync($"DataHora: {DateTimeOffset.UtcNow.ToLocalTime()} - IP: {clientIpAddress}\n");
     }
 }
 
@@ -29,13 +29,15 @@ public class AddRequestDurationMiddleware
 
     public async Task Invoke(HttpContext context)
     {
+        var stopwatch = Stopwatch.StartNew();
         var inicio = DateTimeOffset.UtcNow.Ticks;
 
         await _next(context);
 
-        var fim = DateTimeOffset.UtcNow.Ticks;
-        double duracao = (fim - inicio) / (TimeSpan.TicksPerMillisecond / 1000);
-        await context.Response.WriteAsync($"{duracao} microsegundos\n");
+        stopwatch.Stop();
+
+        var tDuracao = stopwatch.ElapsedTicks /  1000;
+        await context.Response.WriteAsync($"{tDuracao} microsegundos\n");
     }
 }
 
@@ -51,7 +53,7 @@ public class AddRequestJsonException
     {
         try
         {
-            throw new DivideByZeroException();
+            // throw new DivideByZeroException();
             await _next(context);
         }
         catch (Exception ex)
