@@ -5,29 +5,29 @@ namespace OrdemServico.WebAPI.Controllers;
 
 [ApiController]
 [Route("/api/v0.1/")]
-public class OrdemServicoController : ControllerBase
+public class ServicoController : ControllerBase
 {
-    [HttpGet("ordens-de-servico")]
+    [HttpGet("servicos")]
     public IActionResult Get()
     {
         return NoContent();
     }
-    [HttpGet("ordem-de-servico/{id}")]
+    [HttpGet("servico/{id}")]
     public IActionResult GetById(int id)
     {
         return NoContent();
     }
-    [HttpPost("ordem-de-servico")]
-    public IActionResult Post([FromBody] NewOrdemServicoInputModel ordemDeServico)
+    [HttpPost("servico")]
+    public IActionResult Post([FromBody] NewServicoInputModel servico)
     {
         return NoContent();
     }
-    [HttpPut("ordem-de-servico/{id}")]
-    public IActionResult Put(int id, [FromBody] NewOrdemServicoInputModel ordemDeServico)
+    [HttpPut("servico/{id}")]
+    public IActionResult Put(int id, [FromBody] NewServicoInputModel servico)
     {
         return NoContent();
     }
-    [HttpDelete("ordem-de-servico/{id}")]
+    [HttpDelete("servico/{id}")]
     public IActionResult Delete(int id)
     {
         return NoContent();

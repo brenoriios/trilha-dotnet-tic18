@@ -1,4 +1,4 @@
-﻿namespace OrdemDeServico.WebAPI;
+﻿namespace OrdemDeServico.WebAPI.InputModels;
 
 public class NewServicoInputModel
 {
