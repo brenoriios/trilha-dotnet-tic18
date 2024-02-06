@@ -9,4 +9,7 @@ public class Exame : BaseEntity
     public required float Valor { get; set; }
     public required string Local { get; set; }
     public required string ResultadoDescricao { get; set; }
+    public Atendimento? Atendimento { get; set; }
+    public required int AtendimentoId { get; set; }
+
 }
