@@ -13,5 +13,20 @@ public class ConfigurationMapping : Profile
 
         CreateMap<NewClienteInputModel, Cliente>();
         CreateMap<Cliente, ClienteViewModel>();
+
+        CreateMap<NewPrestadorDeServicoInputModel, PrestadorDeServico>();
+        CreateMap<PrestadorDeServico, PrestadorDeServicoViewModel>();
+
+        CreateMap<NewServicoInputModel, Servico>();
+        CreateMap<Servico, ServicoViewModel>();
+
+        CreateMap<NewPagamentoInputModel, Pagamento>();
+        CreateMap<Pagamento, PagamentoViewModel>();
+
+        CreateMap<NewServicoOrdemServicoInputModel, ServicoOrdemServico>();
+        CreateMap<ServicoOrdemServico, ServicoOrdemServicoViewModel>();
+
+        CreateMap<NewOrdemServicoInputModel, OrdemServico>();
+        CreateMap<OrdemServico, OrdemServicoViewModel>();
     }
 }

@@ -84,9 +84,7 @@ public class ClienteService : IClienteService
 
     public List<ClienteViewModel> GetByTelefone(string telefone)
     {
-        var clientes = _context.Clientes
-            .Where(cliente => cliente.Telefone == telefone)
-            .Select(cliente => _mapper.Map<ClienteViewModel>(cliente)).ToList();
+        var clientes = _mapper.ProjectTo<ClienteViewModel>(_context.Clientes).Where(cliente => cliente.Telefone == telefone).ToList();
 
         return clientes;
     }

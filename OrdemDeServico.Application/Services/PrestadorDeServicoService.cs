@@ -1,4 +1,5 @@
-﻿using OrdemDeServico.Application.InputModels;
+﻿using AutoMapper;
+using OrdemDeServico.Application.InputModels;
 using OrdemDeServico.Application.Services.Interfaces;
 using OrdemDeServico.Application.ViewModels;
 using OrdemDeServico.Domain.Entities;
@@ -10,31 +11,16 @@ public class PrestadorDeServicoService : IPrestadorDeServicoService
 {
     private readonly OrdemDeServicoContext _context;
     private readonly IEnderecoService _enderecoService;
-    public PrestadorDeServicoService(OrdemDeServicoContext context, IEnderecoService enderecoService)
+    private readonly IMapper _mapper;
+    public PrestadorDeServicoService(OrdemDeServicoContext context, IMapper mapper, IEnderecoService enderecoService)
     {
         _context = context;
+        _mapper = mapper;
         _enderecoService = enderecoService;
     }
     public int Create(NewPrestadorDeServicoInputModel prestadorDeServico)
     {
-        var _prestadorDeServico = new PrestadorDeServico
-        {
-            Nome = prestadorDeServico.Nome,
-            Especialidade = prestadorDeServico.Especialidade,
-            Telefone = prestadorDeServico.Telefone,
-            Endereco = new Endereco
-            {
-                Logradouro = prestadorDeServico.Endereco.Logradouro,
-                Bairro = prestadorDeServico.Endereco.Bairro,
-                Numero = prestadorDeServico.Endereco.Numero,
-                Complemento = prestadorDeServico.Endereco.Complemento,
-                Cidade = prestadorDeServico.Endereco.Cidade,
-                Estado = prestadorDeServico.Endereco.Estado,
-                Pais = prestadorDeServico.Endereco.Pais,
-                Cep = prestadorDeServico.Endereco.Cep,
-                CreatedAt = DateTime.UtcNow,
-            }
-        };
+        var _prestadorDeServico = _mapper.Map<PrestadorDeServico>(prestadorDeServico);
         _context.PrestadoresDeServico.Add(_prestadorDeServico);
         _context.SaveChanges();
 
@@ -73,24 +59,7 @@ public class PrestadorDeServicoService : IPrestadorDeServicoService
 
     public ICollection<PrestadorDeServicoViewModel> GetAll()
     {
-        var _prestadoresDeServico = _context.PrestadoresDeServico.Select(prestadorDeServico => new PrestadorDeServicoViewModel
-        {
-            PrestadorDeServicoId = prestadorDeServico.PrestadorDeServicoId,
-            Nome = prestadorDeServico.Nome,
-            Especialidade = prestadorDeServico.Especialidade,
-            Telefone = prestadorDeServico.Telefone,
-            Endereco = new EnderecoViewModel
-            {
-                Logradouro = prestadorDeServico.Endereco.Logradouro,
-                Bairro = prestadorDeServico.Endereco.Bairro,
-                Numero = prestadorDeServico.Endereco.Numero,
-                Complemento = prestadorDeServico.Endereco.Complemento,
-                Cidade = prestadorDeServico.Endereco.Cidade,
-                Estado = prestadorDeServico.Endereco.Estado,
-                Pais = prestadorDeServico.Endereco.Pais,
-                Cep = prestadorDeServico.Endereco.Cep,
-            }
-        }).ToArray();
+        var _prestadoresDeServico = _mapper.ProjectTo<PrestadorDeServicoViewModel>(_context.PrestadoresDeServico).ToList();
 
         return _prestadoresDeServico;
     }
@@ -111,49 +80,12 @@ public class PrestadorDeServicoService : IPrestadorDeServicoService
             return null;
         }
 
-        var _prestadorDeServico = new PrestadorDeServicoViewModel
-        {
-            PrestadorDeServicoId = _prestadorDeServicoDb.PrestadorDeServicoId,
-            Nome = _prestadorDeServicoDb.Nome,
-            Especialidade = _prestadorDeServicoDb.Especialidade,
-            Telefone = _prestadorDeServicoDb.Telefone,
-            Endereco = new EnderecoViewModel
-            {
-                EnderecoId = _prestadorDeServicoDb.Endereco.EnderecoId,
-                Logradouro = _prestadorDeServicoDb.Endereco.Logradouro,
-                Bairro = _prestadorDeServicoDb.Endereco.Bairro,
-                Numero = _prestadorDeServicoDb.Endereco.Numero,
-                Complemento = _prestadorDeServicoDb.Endereco.Complemento,
-                Cidade = _prestadorDeServicoDb.Endereco.Cidade,
-                Estado = _prestadorDeServicoDb.Endereco.Estado,
-                Pais = _prestadorDeServicoDb.Endereco.Pais,
-                Cep = _prestadorDeServicoDb.Endereco.Cep,
-            }
-        };
+        var _prestadorDeServico = _mapper.Map<PrestadorDeServicoViewModel>(_prestadorDeServicoDb);
         return _prestadorDeServico;
     }
     public List<PrestadorDeServicoViewModel> GetByEspecialidade(string especialidade)
     {
-        var _prestadoresDeServico = _context.PrestadoresDeServico
-            .Where(prestadorDeServico => prestadorDeServico.Especialidade == especialidade)
-            .Select(prestadorDeServico => new PrestadorDeServicoViewModel
-            {
-                PrestadorDeServicoId = prestadorDeServico.PrestadorDeServicoId,
-                Nome = prestadorDeServico.Nome,
-                Especialidade = prestadorDeServico.Especialidade,
-                Telefone = prestadorDeServico.Telefone,
-                Endereco = new EnderecoViewModel
-                {
-                    Logradouro = prestadorDeServico.Endereco.Logradouro,
-                    Bairro = prestadorDeServico.Endereco.Bairro,
-                    Numero = prestadorDeServico.Endereco.Numero,
-                    Complemento = prestadorDeServico.Endereco.Complemento,
-                    Cidade = prestadorDeServico.Endereco.Cidade,
-                    Estado = prestadorDeServico.Endereco.Estado,
-                    Pais = prestadorDeServico.Endereco.Pais,
-                    Cep = prestadorDeServico.Endereco.Cep,
-                }
-            }).ToList();
+        var _prestadoresDeServico = _mapper.ProjectTo<PrestadorDeServicoViewModel>(_context.PrestadoresDeServico).Where(prestadorDeServico => prestadorDeServico.Especialidade == especialidade).ToList();
 
         return _prestadoresDeServico;
     }

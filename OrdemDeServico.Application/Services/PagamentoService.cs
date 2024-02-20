@@ -1,4 +1,5 @@
-﻿using OrdemDeServico.Application.InputModels;
+﻿using AutoMapper;
+using OrdemDeServico.Application.InputModels;
 using OrdemDeServico.Application.Services.Interfaces;
 using OrdemDeServico.Application.ViewModels;
 using OrdemDeServico.Domain;
@@ -10,22 +11,18 @@ namespace OrdemDeServico.Application.Services;
 public class PagamentoService : IPagamentoService
 {
     private readonly OrdemDeServicoContext _context;
+    private readonly IMapper _mapper;
 
-    public PagamentoService(OrdemDeServicoContext context)
+    public PagamentoService(OrdemDeServicoContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     public int Create(NewPagamentoInputModel pagamento)
     {
         var _ordemServico = _context.OrdensServico.Find(pagamento.OrdemServicoId) ?? throw new OrdemServicoNotFoundException();
-        var _pagamento = new Pagamento
-        {
-            Valor = pagamento.Valor,
-            DataPagamento = pagamento.DataPagamento,
-            MetodoPagamento = pagamento.MetodoPagamento,
-            OrdemServicoId = _ordemServico.OrdemServicoId
-        };
+        var _pagamento = _mapper.Map<Pagamento>(pagamento);
         _context.Pagamentos.Add(_pagamento);
         _context.SaveChanges();
 
@@ -35,13 +32,7 @@ public class PagamentoService : IPagamentoService
 
     public ICollection<PagamentoViewModel> GetAll()
     {
-        var _pagamentos = _context.Pagamentos.Select(pagamento => new PagamentoViewModel
-        {
-            PagamentoId = pagamento.PagamentoId,
-            Valor = pagamento.Valor,
-            DataPagamento = pagamento.DataPagamento,
-            MetodoPagamento = pagamento.MetodoPagamento
-        }).ToList();
+        var _pagamentos = _mapper.ProjectTo<PagamentoViewModel>(_context.Pagamentos).ToList();
 
         return _pagamentos;
     }
@@ -55,13 +46,7 @@ public class PagamentoService : IPagamentoService
             return null;
         }
 
-        var _pagamentoViewModel = new PagamentoViewModel
-        {
-            PagamentoId = _pagamento.PagamentoId,
-            Valor = _pagamento.Valor,
-            DataPagamento = _pagamento.DataPagamento,
-            MetodoPagamento = _pagamento.MetodoPagamento
-        };
+        var _pagamentoViewModel = _mapper.Map<PagamentoViewModel>(_pagamento);
 
         return _pagamentoViewModel;
     }
@@ -93,16 +78,8 @@ public class PagamentoService : IPagamentoService
 
     public List<PagamentoViewModel> GetPagamentoByMetodo(string metodoDePagamento)
     {
-        var _pagamentos = _context.Pagamentos
-            .Where(pagamento => pagamento.MetodoPagamento == metodoDePagamento)
-            .Select(pagamento => new PagamentoViewModel
-            {
-                PagamentoId = pagamento.PagamentoId,
-                Valor = pagamento.Valor,
-                DataPagamento = pagamento.DataPagamento,
-                MetodoPagamento = pagamento.MetodoPagamento
-            }).ToList();
-
+        var _pagamentos = _mapper.ProjectTo<PagamentoViewModel>(_context.Pagamentos).Where(pagamento => pagamento.MetodoPagamento == metodoDePagamento).ToList();
+        
         return _pagamentos;
     }
 }

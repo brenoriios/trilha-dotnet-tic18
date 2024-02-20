@@ -1,4 +1,5 @@
-﻿using OrdemDeServico.Application.InputModels;
+﻿using AutoMapper;
+using OrdemDeServico.Application.InputModels;
 using OrdemDeServico.Application.Services.Interfaces;
 using OrdemDeServico.Application.ViewModels;
 using OrdemDeServico.Domain.Entities;
@@ -9,24 +10,15 @@ namespace OrdemDeServico.Application.Services;
 public class EnderecoService : IEnderecoService
 {
     private readonly OrdemDeServicoContext _context;
-    public EnderecoService(OrdemDeServicoContext context)
+    private readonly IMapper _mapper;
+    public EnderecoService(OrdemDeServicoContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
     public int Create(NewEnderecoInputModel endereco)
     {
-        var _endereco = new Endereco
-        {
-            Logradouro = endereco.Logradouro,
-            Bairro = endereco.Bairro,
-            Numero = endereco.Numero,
-            Complemento = endereco.Complemento,
-            Cidade = endereco.Cidade,
-            Estado = endereco.Estado,
-            Pais = endereco.Pais,
-            Cep = endereco.Cep,
-            CreatedAt = DateTime.UtcNow,
-        };
+        var _endereco = _mapper.Map<Endereco>(endereco);
         _context.Enderecos.Add(_endereco);
         _context.SaveChanges();
 
@@ -35,17 +27,7 @@ public class EnderecoService : IEnderecoService
 
     public ICollection<EnderecoViewModel> GetAll()
     {
-        var _enderecos = _context.Enderecos.Select(endereco => new EnderecoViewModel
-        {
-            Logradouro = endereco.Logradouro,
-            Bairro = endereco.Bairro,
-            Numero = endereco.Numero,
-            Complemento = endereco.Complemento,
-            Cidade = endereco.Cidade,
-            Estado = endereco.Estado,
-            Pais = endereco.Pais,
-            Cep = endereco.Cep,
-        }).ToArray();
+        var _enderecos = _mapper.ProjectTo<EnderecoViewModel>(_context.Enderecos).ToArray();
         return _enderecos;
     }
 
@@ -58,17 +40,7 @@ public class EnderecoService : IEnderecoService
             return null;
         }
 
-        var _endereco = new EnderecoViewModel
-        {
-            Logradouro = _enderecoDb.Logradouro,
-            Bairro = _enderecoDb.Bairro,
-            Numero = _enderecoDb.Numero,
-            Complemento = _enderecoDb.Complemento,
-            Cidade = _enderecoDb.Cidade,
-            Estado = _enderecoDb.Estado,
-            Pais = _enderecoDb.Pais,
-            Cep = _enderecoDb.Cep,
-        };
+        var _endereco = _mapper.Map<EnderecoViewModel>(_enderecoDb);
         return _endereco;
     }
 
