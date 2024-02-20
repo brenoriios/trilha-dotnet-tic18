@@ -1,4 +1,7 @@
-﻿using OrdemDeServico.Application.InputModels;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using Microsoft.EntityFrameworkCore;
+using OrdemDeServico.Application.InputModels;
 using OrdemDeServico.Application.Services.Interfaces;
 using OrdemDeServico.Application.ViewModels;
 using OrdemDeServico.Domain.Entities;
@@ -9,32 +12,18 @@ namespace OrdemDeServico.Application.Services;
 public class ClienteService : IClienteService
 {
     private readonly OrdemDeServicoContext _context;
+    private readonly IMapper _mapper;
     private readonly IEnderecoService _enderecoService;
-    public ClienteService(OrdemDeServicoContext context, IEnderecoService enderecoService)
+    public ClienteService(OrdemDeServicoContext context, IEnderecoService enderecoService, IMapper mapper)
     {
         _context = context;
         _enderecoService = enderecoService;
+        _mapper = mapper;
     }
     public int Create(NewClienteInputModel cliente)
     {
-        var _cliente = new Cliente
-        {
-            Nome = cliente.Nome,
-            Email = cliente.Email,
-            Telefone = cliente.Telefone,
-            Endereco = new Endereco
-            {
-                Logradouro = cliente.Endereco.Logradouro,
-                Bairro = cliente.Endereco.Bairro,
-                Numero = cliente.Endereco.Numero,
-                Complemento = cliente.Endereco.Complemento,
-                Cidade = cliente.Endereco.Cidade,
-                Estado = cliente.Endereco.Estado,
-                Pais = cliente.Endereco.Pais,
-                Cep = cliente.Endereco.Cep,
-            },
-            CreatedAt = DateTime.UtcNow,
-        };
+        var _cliente = _mapper.Map<Cliente>(cliente);
+
         _context.Clientes.Add(_cliente);
         _context.SaveChanges();
 
@@ -43,25 +32,7 @@ public class ClienteService : IClienteService
 
     public ICollection<ClienteViewModel> GetAll()
     {
-        var _clientes = _context.Clientes.Select(cliente => new ClienteViewModel
-        {
-            ClienteId = cliente.ClienteId,
-            Nome = cliente.Nome,
-            Email = cliente.Email,
-            Telefone = cliente.Telefone,
-            Endereco = new EnderecoViewModel
-            {
-                EnderecoId = cliente.Endereco.EnderecoId,
-                Logradouro = cliente.Endereco.Logradouro,
-                Bairro = cliente.Endereco.Bairro,
-                Numero = cliente.Endereco.Numero,
-                Complemento = cliente.Endereco.Complemento,
-                Cidade = cliente.Endereco.Cidade,
-                Estado = cliente.Endereco.Estado,
-                Pais = cliente.Endereco.Pais,
-                Cep = cliente.Endereco.Cep,
-            }
-        }).ToArray();
+        var _clientes = _mapper.ProjectTo<ClienteViewModel>(_context.Clientes).ToList();
 
         return _clientes;
     }
@@ -82,16 +53,7 @@ public class ClienteService : IClienteService
             return null;
         }
 
-        var _clienteViewModel = new ClienteViewModel
-        {
-            ClienteId = _cliente.ClienteId,
-            Nome = _cliente.Nome,
-            Email = _cliente.Email,
-            Telefone = _cliente.Telefone,
-            Endereco = _endereco
-        };
-
-        return _clienteViewModel;
+        return _mapper.Map<ClienteViewModel>(_cliente);
     }
 
     public void Update(int id, NewClienteInputModel cliente)
@@ -124,25 +86,7 @@ public class ClienteService : IClienteService
     {
         var clientes = _context.Clientes
             .Where(cliente => cliente.Telefone == telefone)
-            .Select(cliente => new ClienteViewModel
-            {
-                ClienteId = cliente.ClienteId,
-                Nome = cliente.Nome,
-                Email = cliente.Email,
-                Telefone = cliente.Telefone,
-                Endereco = new EnderecoViewModel
-                {
-                    EnderecoId = cliente.Endereco.EnderecoId,
-                    Logradouro = cliente.Endereco.Logradouro,
-                    Numero = cliente.Endereco.Numero,
-                    Bairro = cliente.Endereco.Bairro,
-                    Complemento = cliente.Endereco.Complemento,
-                    Estado = cliente.Endereco.Estado,
-                    Cidade = cliente.Endereco.Cidade,
-                    Cep = cliente.Endereco.Cep,
-                    Pais = cliente.Endereco.Pais
-                }
-            }).ToList();
+            .Select(cliente => _mapper.Map<ClienteViewModel>(cliente)).ToList();
 
         return clientes;
     }

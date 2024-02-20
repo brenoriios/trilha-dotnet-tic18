@@ -1,4 +1,6 @@
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
+using OrdemDeServico.Application.AutoMapper;
 using OrdemDeServico.Application.Services;
 using OrdemDeServico.Application.Services.Interfaces;
 using ResTIConnect.Infrastructure.Persistence;
@@ -13,6 +15,10 @@ builder.Services.AddScoped<IPrestadorDeServicoService, PrestadorDeServicoService
 builder.Services.AddScoped<IOrdemServicoService, OrdemServicoService>();
 builder.Services.AddScoped<IPagamentoService, PagamentoService>();
 builder.Services.AddScoped<IServicoService, ServicoService>();
+
+builder.Services.AddAutoMapper(cfg => {
+    cfg.AddProfile<ConfigurationMapping>();
+});
 
 builder.Services.AddDbContext<OrdemDeServicoContext>(options =>
 {
