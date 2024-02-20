@@ -1,4 +1,5 @@
-﻿using OrdemDeServico.Application.InputModels;
+﻿using AutoMapper;
+using OrdemDeServico.Application.InputModels;
 using OrdemDeServico.Application.Services.Interfaces;
 using OrdemDeServico.Application.ViewModels;
 using OrdemDeServico.Domain;
@@ -11,11 +12,13 @@ namespace OrdemDeServico.Application.Services;
 public class OrdemServicoService : IOrdemServicoService
 {
     private readonly OrdemDeServicoContext _context;
+    private readonly IMapper _mapper;
     private readonly IClienteService _clienteService;
     private readonly IPrestadorDeServicoService _prestadorDeServicoService;
-    public OrdemServicoService(OrdemDeServicoContext context, IClienteService clienteService, IPrestadorDeServicoService prestadorDeServicoService)
+    public OrdemServicoService(OrdemDeServicoContext context, IMapper mapper, IClienteService clienteService, IPrestadorDeServicoService prestadorDeServicoService)
     {
         _context = context;
+        _mapper = mapper;
         _clienteService = clienteService;
         _prestadorDeServicoService = prestadorDeServicoService;
     }
@@ -24,16 +27,7 @@ public class OrdemServicoService : IOrdemServicoService
         var _cliente = _context.Clientes.Find(ordemServico.ClienteId) ?? throw new ClienteNotFoundException();
         var _prestadorDeServico = _context.PrestadoresDeServico.Find(ordemServico.PrestadorDeServicoId) ?? throw new PrestadorDeServicoNotFoundException();
 
-        var _ordemServico = new OrdemServico
-        {
-            Numero = ordemServico.Numero,
-            Descricao = ordemServico.Descricao,
-            DataDeEmissao = ordemServico.DataDeEmissao,
-            Status = ordemServico.Status,
-            ClienteId = _cliente.ClienteId,
-            PrestadorDeServicoId = _prestadorDeServico.PrestadorDeServicoId,
-            CreatedAt = DateTime.UtcNow
-        };
+        var _ordemServico = _mapper.Map<OrdemServico>(ordemServico);
 
         _context.OrdensServico.Add(_ordemServico);
         _context.SaveChanges();
@@ -42,17 +36,7 @@ public class OrdemServicoService : IOrdemServicoService
         foreach (var servico in ordemServico.Servicos)
         {
             var _servico = _context.Servicos.Find(servico.ServicoId) ?? throw new ServicoNotFoundException();
-            var _endereco = new Endereco
-            {
-                Logradouro = servico.Endereco.Logradouro,
-                Bairro = servico.Endereco.Bairro,
-                Numero = servico.Endereco.Numero,
-                Complemento = servico.Endereco.Complemento,
-                Cidade = servico.Endereco.Cidade,
-                Estado = servico.Endereco.Estado,
-                Pais = servico.Endereco.Pais,
-                Cep = servico.Endereco.Cep,
-            };
+            var _endereco = _mapper.Map<Endereco>(servico.Endereco);
 
             var _servicoOrdemServico = new ServicoOrdemServico
             {
@@ -86,82 +70,8 @@ public class OrdemServicoService : IOrdemServicoService
 
     public ICollection<OrdemServicoViewModel> GetAll()
     {
-        return _context.OrdensServico.Select(ordemServico => new OrdemServicoViewModel
-        {
-            OrdemServicoId = ordemServico.OrdemServicoId,
-            Numero = ordemServico.Numero,
-            Descricao = ordemServico.Descricao,
-            DataDeEmissao = ordemServico.DataDeEmissao,
-            Status = ordemServico.Status,
-            Cliente = new ClienteViewModel
-            {
-                ClienteId = ordemServico.Cliente!.ClienteId,
-                Nome = ordemServico.Cliente!.Nome,
-                Email = ordemServico.Cliente!.Email,
-                Telefone = ordemServico.Cliente!.Telefone,
-                Endereco = new EnderecoViewModel
-                {
-                    EnderecoId = ordemServico.Cliente!.Endereco.EnderecoId,
-                    Logradouro = ordemServico.Cliente!.Endereco.Logradouro,
-                    Bairro = ordemServico.Cliente!.Endereco.Bairro,
-                    Numero = ordemServico.Cliente!.Endereco.Numero,
-                    Complemento = ordemServico.Cliente!.Endereco.Complemento,
-                    Cidade = ordemServico.Cliente!.Endereco.Cidade,
-                    Estado = ordemServico.Cliente!.Endereco.Estado,
-                    Pais = ordemServico.Cliente!.Endereco.Pais,
-                    Cep = ordemServico.Cliente!.Endereco.Cep,
-                }
-            },
-            PrestadorDeServico = new PrestadorDeServicoViewModel
-            {
-                PrestadorDeServicoId = ordemServico.PrestadorDeServico!.PrestadorDeServicoId,
-                Nome = ordemServico.PrestadorDeServico!.Nome,
-                Especialidade = ordemServico.PrestadorDeServico!.Especialidade,
-                Telefone = ordemServico.PrestadorDeServico!.Telefone,
-                Endereco = new EnderecoViewModel
-                {
-                    Logradouro = ordemServico.PrestadorDeServico!.Endereco.Logradouro,
-                    Bairro = ordemServico.PrestadorDeServico!.Endereco.Bairro,
-                    Numero = ordemServico.PrestadorDeServico!.Endereco.Numero,
-                    Complemento = ordemServico.PrestadorDeServico!.Endereco.Complemento,
-                    Cidade = ordemServico.PrestadorDeServico!.Endereco.Cidade,
-                    Estado = ordemServico.PrestadorDeServico!.Endereco.Estado,
-                    Pais = ordemServico.PrestadorDeServico!.Endereco.Pais,
-                    Cep = ordemServico.PrestadorDeServico!.Endereco.Cep,
-                }
-            },
-            Servicos = _context.ServicosOrdensServico
-                .Where(servicoOrdemServico => servicoOrdemServico.OrdemServicoId == ordemServico.OrdemServicoId)
-                .Select(servicoOrdemServico => new ServicoOrdemServicoViewModel
-                {
-                    Servico = new ServicoViewModel
-                    {
-                        ServicoId = servicoOrdemServico.Servico!.ServicoId,
-                        Nome = servicoOrdemServico.Servico!.Nome,
-                        Descricao = servicoOrdemServico.Servico!.Descricao,
-                        Precos = servicoOrdemServico.Servico!.Precos
-                    },
-                    Endereco = new EnderecoViewModel
-                    {
-                        EnderecoId = servicoOrdemServico.Endereco!.EnderecoId,
-                        Logradouro = servicoOrdemServico.Endereco!.Logradouro,
-                        Bairro = servicoOrdemServico.Endereco!.Bairro,
-                        Numero = servicoOrdemServico.Endereco!.Numero,
-                        Complemento = servicoOrdemServico.Endereco!.Complemento,
-                        Cidade = servicoOrdemServico.Endereco!.Cidade,
-                        Estado = servicoOrdemServico.Endereco!.Estado,
-                        Pais = servicoOrdemServico.Endereco!.Pais,
-                        Cep = servicoOrdemServico.Endereco!.Cep,
-                    }
-                }).ToList(),
-            Pagamentos = _context.Pagamentos.Select(pagamento => new PagamentoViewModel
-            {
-                PagamentoId = pagamento.PagamentoId,
-                DataPagamento = pagamento.DataPagamento,
-                MetodoPagamento = pagamento.MetodoPagamento,
-                Valor = pagamento.Valor
-            }).ToList()
-        }).ToArray();
+        var _ordensServico = _mapper.ProjectTo<OrdemServicoViewModel>(_context.OrdensServico).ToList();
+        return _ordensServico;
     }
 
     public OrdemServicoViewModel? GetById(int id)
